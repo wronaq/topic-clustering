@@ -1,0 +1,12 @@
+{
+    "dataloader": "DataLoader",
+    "dataloader_args": {
+        "path": "data.txt"
+    },
+    "model_args": {
+        "model_name_or_path": "sentence-transformers/xlm-r-100langs-bert-base-nli-stsb-mean-tokens",
+        "device": "cpu",
+        "max_seq_length": 256,
+        "batch_size": 16
+    }
+}
