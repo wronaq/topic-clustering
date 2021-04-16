@@ -8,5 +8,12 @@
         "device": "cpu",
         "max_seq_length": 256,
         "batch_size": 16
+    },
+    "umap_args": {
+        "n_neighbors": 25,
+        "n_components": 5,
+        "metric": "cosine",
+        "min_dist": 0.5,
+        "random_state": 2137
     }
 }
