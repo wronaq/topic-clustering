@@ -10,10 +10,17 @@
         "batch_size": 16
     },
     "umap_args": {
-        "n_neighbors": 25,
+        "n_neighbors": 10,
         "n_components": 5,
         "metric": "cosine",
-        "min_dist": 0.5,
+        "min_dist": 0.01,
         "random_state": 2137
+    },
+    "hdbscan_args": {
+        "min_cluster_size": 35,
+        "metric": "euclidean"
+    },
+    "topic_args": {
+        "stop_words_path": "data/polish_stopwords.txt",
     }
 }
