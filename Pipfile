@@ -9,6 +9,7 @@ sentence-transformers = "*"
 protobuf = "*"
 pathlib = "*"
 umap-learn = "*"
+hdbscan = "*"
 
 [dev-packages]
 ipython = "*"
