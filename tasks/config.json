@@ -20,7 +20,7 @@
         "min_cluster_size": 35,
         "metric": "euclidean"
     },
-    "topic_args": {
-        "stop_words_path": "data/polish_stopwords.txt",
+    "topics_args": {
+        "stop_words_path": "data/polish_stopwords.txt"
     }
 }

@@ -7,10 +7,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-def run_experiment(experiment_config, n_topics, n_words, save_embeddings=True):
+def run_experiment(experiment_config, n_topics, n_words):
 
     try:
-        embeddings = torch.load("sentence_embeddings.pt")
+        embeddings = torch.load("output/sentence_embeddings.pt")
     except:
         logging.info("Creating sentence embeddings")
         # load data
@@ -43,13 +43,17 @@ def run_experiment(experiment_config, n_topics, n_words, save_embeddings=True):
         model = model_class_(**model_args_)
         model.max_seq_length = max_seq_length_
         embeddings = model.encode(
-            dataset.load_data()[:32], show_progress_bar=True, **encode_args_
+            dataset.load_data(), show_progress_bar=True, **encode_args_
         )
 
-        if save_embeddings:
-            torch.save(embeddings, "sentence_embeddings.pt")
+        torch.save(embeddings, "output/sentence_embeddings.pt")
     else:
         logging.info("Sentence embeddings loaded from file")
+        # load data
+        data_module_ = importlib.import_module("topic_clustering.data_loader")
+        dataloader_class_ = getattr(data_module_, experiment_config["dataloader"])
+        dataloader_args_ = experiment_config.get("dataloader_args", {})
+        dataset = dataloader_class_(**dataloader_args_)
 
     # dimensionality reduction
     logging.info("Dimensionality reduction")
@@ -70,10 +74,11 @@ def run_experiment(experiment_config, n_topics, n_words, save_embeddings=True):
     # class-based TF-IDF
     logging.info("Calculate class-based TF-IDF")
     topic_module_ = importlib.import_module("topic_clustering.topics")
-    topic_class_ = getattr(topic_module_, "Topic")
-    topic_args_ = experiment_config.get("topic_args", {})
-    topic = topic_class_(dataset, clusters, n_topics, **topic_args_)
-    topic.top_n_words(n_words)
+    topics_class_ = getattr(topic_module_, "Topics")
+    topics_args_ = experiment_config.get("topics_args", {})
+    topics = topics_class_(dataset, clusters.labels_, n_topics, **topics_args_)
+    topics.describe_topics(n_words)
+    torch.save(topics, "output/topics_obj.pt")
 
 
 def _parse_args():
@@ -93,11 +98,6 @@ def _parse_args():
         type=int,
         help="Top n words that describe each topic.",
     )
-    parser.add_argument(
-        "--save_embeddings",
-        action="store_true",
-        help="Whether to save embeddings",
-    )
     args = parser.parse_args()
     return args
 
@@ -108,7 +108,7 @@ def main():
     with open(args.experiment_config, "r") as f:
         config = f.read()
     experiment_config = json.loads(config)
-    run_experiment(experiment_config, args.n_topics, args.n_words, args.save_embeddings)
+    run_experiment(experiment_config, args.n_topics, args.n_words)
 
 
 if __name__ == "__main__":
