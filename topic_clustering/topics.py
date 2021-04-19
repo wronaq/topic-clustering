@@ -1,9 +1,6 @@
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sentence_transformers.util import cos_sim
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 
 class Topics:
@@ -11,8 +8,8 @@ class Topics:
         self,
         dataset,
         clusters,
-        stop_words_path="data/polish_stopwords.txt",
         n_topics=None,
+        stop_words_path="data/polish_stopwords.txt",
     ):
         self.data = dataset.load_data()
         self.clusters = clusters
@@ -21,7 +18,7 @@ class Topics:
         self._words, self.ctfidf = self.calculate_cTFIDF()
 
         if n_topics and n_topics > 0:
-            self._topics_reduction(n_topics)
+            self.topics_reduction(n_topics)
 
     def _docs_in_topic(self):
         grouped = {}
@@ -62,7 +59,7 @@ class Topics:
             ]
         else:
             top_n_indices = self.ctfidf.argsort(axis=1)[topic_number + 1, -n:]
-            return tuple(self._words[w] for w in top_n_indices[::-1])
+            return (topic_number, [self._words[w] for w in top_n_indices[::-1]])
 
     def count_documents(self, topic_number=None):
         if topic_number is None:
@@ -70,19 +67,21 @@ class Topics:
         else:
             return len(self.docs_in_topic.get(topic_number, []))
 
-    def _topics_reduction(self, desired_number):
-        if desired_number >= len(self.docs_in_topic):
-            return self.count_documents()
+    def topics_reduction(self, desired_number):
+        if desired_number >= len(self.docs_in_topic) - 1:
+            pass
         else:
-            logging.info(f"Topics found: {len(self.docs_in_topic)}. Compresing...")
-            topics_to_merge = len(self.docs_in_topic) - desired_number
+            print(f"Topics found: {len(self.docs_in_topic) - 1}. Compresing...")
+            topics_to_merge = len(self.docs_in_topic) - desired_number - 1
             for _ in range(topics_to_merge):
                 # cosine similarities of topics
                 similarities = cos_sim(self.ctfidf, self.ctfidf).numpy()
                 np.fill_diagonal(similarities, 0)
 
                 # merge topics
-                topic_to_merge = sorted(self.count_documents(), key=lambda x: x[1])[0][
+                topics_no_other = self.count_documents()
+                del topics_no_other[-1]
+                topic_to_merge = sorted(topics_no_other, key=lambda x: x[1])[0][
                     0
                 ]  # smallest
                 topic_to_merge_into = (
@@ -103,4 +102,17 @@ class Topics:
 
                 # calculate new ctfidf
                 self._words, self.ctfidf = self.calculate_cTFIDF()
-            logging.info(f"Final number of topics: {len(self.docs_in_topic)}")
+            print(f"Final number of topics: {len(self.docs_in_topic) - 1}")
+
+    def describe_topics(self, n, topic_number=None):
+        topics = (
+            self.top_n_words(n, topic_number)
+            if topic_number is None
+            else [0, self.top_n_words(n, topic_number)]
+        )
+        for topic, words in topics[1:]:
+            print("-" * 50)
+            print(f"Topic {topic}:")
+            for word in words:
+                print(f"\t* {word}")
+        print("-" * 50)
