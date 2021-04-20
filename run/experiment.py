@@ -1,6 +1,7 @@
 import argparse
 import importlib
 import json
+import os
 import torch
 import logging
 
@@ -45,7 +46,8 @@ def run_experiment(experiment_config, n_topics, n_words):
         embeddings = model.encode(
             dataset.load_data(), show_progress_bar=True, **encode_args_
         )
-
+        if not os.path.exists("output"):
+            os.makedirs("output")
         torch.save(embeddings, "output/sentence_embeddings.pt")
     else:
         logging.info("Sentence embeddings loaded from file")
