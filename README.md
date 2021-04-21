@@ -1,10 +1,13 @@
 # topic-clustering
+
 Sentence transformer + UMAP + HDBSCAN
 
 ## Dataset
+
 Dataset consists of joined train and test set from [Klej-PSC](https://klejbenchmark.com/static/data/klej_psc.zip)
 
 ## Repository tree
+
 ```zsh
 ├── data
 │   ├── preprocessed
@@ -17,7 +20,7 @@ Dataset consists of joined train and test set from [Klej-PSC](https://klejbenchm
 ├── run
 │   └── experiment.py
 ├── tasks
-│   ├── cluser_data.sh
+│   ├── cluster_data.sh
 │   └── config.json
 ├── topic_clustering
 │   ├── data_loader.py
@@ -31,19 +34,22 @@ Dataset consists of joined train and test set from [Klej-PSC](https://klejbenchm
 ```
 
 ## Setup
+
 ```zsh
 pipenv sync
 ```
+
 Add flag -d to also sync development packages.
 
 ## Training
+
 * Load and preprocess data
 * Create/load sentence embeddings
-    * Save it to `output` directory
+  * Save it to `output` directory
 * Reduce hyperspace dimensions with UMAP
 * Cluster data using HDBSCAN
 * Print topics keywords
-    * Save clustered topics object to `oputput` directory
+  * Save clustered topics object to `output` directory
 
 ```zsh
 chmod +x tasks/cluster_data.sh
@@ -54,15 +60,16 @@ tasks/cluster_data.sh \
 ```
 
 ## Example output
+
 ```zsh
 INFO:root:Sentence embeddings loaded from file
 INFO:root:Dimensionality reduction
 INFO:root:Clustering
 INFO:root:Calculate class-based TF-IDF
-Topics found: 19. Compresing...
+Topics found: 19. Compressing...
 Final number of topics: 10
 --------------------------------------------------
-Topic 0:
+Topic 0 (78 documents):
         * środki
         * komórek
         * badania
@@ -71,7 +78,7 @@ Topic 0:
         * mózgu
         * alkoholu
 --------------------------------------------------
-Topic 1:
+Topic 1 (65 documents):
         * boksu
         * gołota
         * boks
@@ -80,7 +87,7 @@ Topic 1:
         * wimbledon
         * pojedynek
 --------------------------------------------------
-Topic 2:
+Topic 2 (113 documents):
         * dzieci
         * szkoły
         * nauczycieli
@@ -89,7 +96,7 @@ Topic 2:
         * szkół
         * szkołach
 --------------------------------------------------
-Topic 3:
+Topic 3 (112 documents):
         * żydów
         * jedwabnego
         * niemieckich
@@ -98,7 +105,7 @@ Topic 3:
         * polnische
         * holokaust
 --------------------------------------------------
-Topic 4:
+Topic 4 (89 documents):
         * putin
         * czeczenii
         * putina
@@ -107,7 +114,7 @@ Topic 4:
         * rosjan
         * władimir
 --------------------------------------------------
-Topic 5:
+Topic 5 (79 documents):
         * emerytalnych
         * ppe
         * emerytury
@@ -116,7 +123,7 @@ Topic 5:
         * społecznego
         * emerytalne
 --------------------------------------------------
-Topic 6:
+Topic 6 (104 documents):
         * pracy
         * firmy
         * zatrudnienia
@@ -125,7 +132,7 @@ Topic 6:
         * firm
         * drobnej
 --------------------------------------------------
-Topic 7:
+Topic 7 (117 documents):
         * unii
         * ue
         * polski
@@ -134,7 +141,7 @@ Topic 7:
         * nato
         * unia
 --------------------------------------------------
-Topic 8:
+Topic 8 (169 documents):
         * sld
         * andrzej
         * stadion
@@ -143,7 +150,7 @@ Topic 8:
         * polleny
         * polski
 --------------------------------------------------
-Topic 9:
+Topic 9 (146 documents):
         * aws
         * partii
         * władzy

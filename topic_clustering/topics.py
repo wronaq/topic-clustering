@@ -71,7 +71,7 @@ class Topics:
         if desired_number >= len(self.docs_in_topic) - 1:
             pass
         else:
-            print(f"Topics found: {len(self.docs_in_topic) - 1}. Compresing...")
+            print(f"Topics found: {len(self.docs_in_topic) - 1}. Compressing...")
             topics_to_merge = len(self.docs_in_topic) - desired_number - 1
             for _ in range(topics_to_merge):
                 # cosine similarities of topics
@@ -112,7 +112,7 @@ class Topics:
         )
         for topic, words in topics[1:]:
             print("-" * 50)
-            print(f"Topic {topic}:")
+            print(f"Topic {topic} ({self.count_documents(topic)} documents):")
             for word in words:
                 print(f"\t* {word}")
         print("-" * 50)
